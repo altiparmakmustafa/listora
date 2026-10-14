@@ -79,6 +79,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Flexible normalization for alternate field names & cases
+    if (typeof rawBody === 'object' && rawBody !== null) {
+      const b = rawBody as Record<string, unknown>;
+      if (!b.productName && b.title) b.productName = b.title;
+      if (!b.keyFeatures && b.features) b.keyFeatures = b.features;
+      if (b.platform && typeof b.platform === 'string') b.platform = b.platform.toLowerCase();
+      if (b.tone && typeof b.tone === 'string') {
+        const toneMap: Record<string, string> = {
+          'profesyonel': 'professional',
+          'samimi': 'friendly',
+          'ikna edici': 'persuasive',
+          'minimal': 'minimal',
+        };
+        b.tone = toneMap[b.tone.toLowerCase()] || b.tone.toLowerCase();
+      }
+    }
+
     const parseResult = GenerateRequestSchema.safeParse(rawBody);
     if (!parseResult.success) {
       const firstIssue = parseResult.error.issues[0]?.message || 'Geçersiz form verisi';

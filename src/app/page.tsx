@@ -1,200 +1,302 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Header } from '@/components/Header';
-import { GeneratorForm } from '@/components/GeneratorForm';
-import { OutputView } from '@/components/OutputView';
-import { WaitlistModal } from '@/components/WaitlistModal';
-import { LandingSections } from '@/components/LandingSections';
-import { GenerateRequest, GenerateResponse } from '@/lib/validations';
-import { Sparkles, AlertTriangle } from 'lucide-react';
+import { ScreenSwitcher } from '@/components/ScreenSwitcher';
+import { Navbar } from '@/components/Navbar';
+import { Hero } from '@/components/Hero';
+import { ToolForm } from '@/components/ToolForm';
+import { ResultsView } from '@/components/ResultsView';
+import { SkeletonLoader } from '@/components/SkeletonLoader';
+import { LimitReachedPanel } from '@/components/LimitReachedPanel';
+import { HowItWorks } from '@/components/HowItWorks';
+import { BeforeAfterSection } from '@/components/BeforeAfterSection';
+import { FaqSection } from '@/components/FaqSection';
+import { Footer } from '@/components/Footer';
+import { HandoffModal } from '@/components/HandoffModal';
+import { Toast } from '@/components/Toast';
+
+import { ActiveScreen, ProductFormData, GeneratedResult } from '@/types';
+import { PRESET_SAMPLES, INITIAL_RESULT, PLATFORM_CONFIG } from '@/data/mockData';
 
 export default function Home() {
-  const [result, setResult] = useState<GenerateResponse | null>(null);
-  const [activePlatform, setActivePlatform] = useState<string>('trendyol');
-  const [lastInput, setLastInput] = useState<GenerateRequest | null>(null);
+  // Screen management: 'landing' (form only) | 'results' | 'limit' | 'skeleton'
+  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('landing');
 
+  // Daily quota: default 15 free generations per visitor
+  const [maxQuota, setMaxQuota] = useState<number>(15);
+  const [quotaCount, setQuotaCount] = useState<number>(15);
+
+  // Form State initialized with the popular Linen Shirt example
+  const [formData, setFormData] = useState<ProductFormData>(PRESET_SAMPLES[0].data);
+  const [activePresetId, setActivePresetId] = useState<string>(PRESET_SAMPLES[0].id);
+
+  // Result State
+  const [result, setResult] = useState<GeneratedResult>(INITIAL_RESULT);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorBanner, setErrorBanner] = useState<{
+
+  // Handoff & Code Export Modal
+  const [isHandoffOpen, setIsHandoffOpen] = useState<boolean>(false);
+
+  // Toast Notification state
+  const [toast, setToast] = useState<{
+    visible: boolean;
     message: string;
-    code?: string;
-  } | null>(null);
+    type: 'success' | 'info' | 'error';
+  }>({
+    visible: false,
+    message: '',
+    type: 'success',
+  });
 
-  const [remainingGenerations, setRemainingGenerations] = useState<number | null>(null);
-  const [maxGenerations, setMaxGenerations] = useState<number>(15);
+  const showToast = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
+    setToast({ visible: true, message, type });
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, visible: false }));
+    }, 3200);
+  };
 
-  const [isWaitlistOpen, setIsWaitlistOpen] = useState<boolean>(false);
-  const [waitlistReason, setWaitlistReason] = useState<'limit_reached' | 'pro_clicked'>('pro_clicked');
-
-  // Load visitor usage on page mount
+  // Fetch visitor usage status on mount
   useEffect(() => {
-    async function fetchStatus() {
+    async function loadVisitorStatus() {
       try {
         const res = await fetch('/api/visitor/status');
-        const data = await res.json();
-        if (data?.visitor) {
-          setRemainingGenerations(data.visitor.remaining);
-          setMaxGenerations(data.visitor.max);
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.visitor) {
+            setQuotaCount(data.visitor.remaining);
+            setMaxQuota(data.visitor.max);
+            if (data.visitor.remaining <= 0) {
+              setActiveScreen('limit');
+            }
+          }
         }
-      } catch (e) {
-        console.error('Could not load visitor status', e);
+      } catch (err) {
+        console.error('Could not load visitor usage status:', err);
       }
     }
-    fetchStatus();
+    loadVisitorStatus();
   }, []);
 
-  const handleGenerate = async (formData: GenerateRequest) => {
+  // Preset Applicator
+  const handleApplyPreset = (presetId: string) => {
+    const found = PRESET_SAMPLES.find((p) => p.id === presetId);
+    if (found) {
+      setFormData(found.data);
+      setActivePresetId(found.id);
+      showToast(`"${found.label}" örnek verileri forma yüklendi.`);
+    }
+  };
+
+  // Form Submit / Generation trigger
+  const handleGenerate = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+
+    if (quotaCount <= 0) {
+      setActiveScreen('limit');
+      showToast('Günlük ücretsiz kullanım hakkınız doldu!', 'info');
+      return;
+    }
+
     setIsLoading(true);
-    setErrorBanner(null);
-    setLastInput(formData);
-    setActivePlatform(formData.platform);
+    setActiveScreen('skeleton');
 
     try {
+      const toneMapping: Record<string, string> = {
+        'Profesyonel': 'professional',
+        'Samimi': 'friendly',
+        'İkna edici': 'persuasive',
+        'Minimal': 'minimal',
+      };
+      const platformMapping: Record<string, string> = {
+        'Trendyol': 'trendyol',
+        'Hepsiburada': 'hepsiburada',
+        'N11': 'n11',
+        'Etsy': 'etsy',
+      };
+
+      const payload = {
+        productName: formData.title,
+        category: formData.category,
+        keyFeatures: formData.features,
+        targetAudience: formData.targetAudience,
+        tone: toneMapping[formData.tone] || 'professional',
+        platform: platformMapping[formData.platform] || 'trendyol',
+        language: formData.language,
+      };
+
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const json = await res.json();
 
       if (!res.ok) {
-        // Ziyaretçi günlük limiti doldu (Ekran 3)
         if (json.code === 'VISITOR_LIMIT_REACHED') {
-          setRemainingGenerations(0);
-          setWaitlistReason('limit_reached');
-          setIsWaitlistOpen(true);
-          setErrorBanner({
-            message: 'Bugünlük ücretsiz kullanım hakkınız doldu (15/15). Pro sürüm için bekleme listesine katılabilirsiniz.',
-            code: 'VISITOR_LIMIT_REACHED',
-          });
+          setQuotaCount(0);
+          setActiveScreen('limit');
+          showToast('Bugünlük ücretsiz kullanım sınırınıza ulaştınız.', 'info');
           return;
         }
 
-        // Genel günlük tavan doldu
         if (json.code === 'GLOBAL_CAP_REACHED') {
-          setErrorBanner({
-            message: 'Bugünlük kapasite doldu, yarın tekrar dene.',
-            code: 'GLOBAL_CAP_REACHED',
-          });
+          setActiveScreen('landing');
+          showToast('Bugünlük genel kapasite doldu, lütfen yarın tekrar deneyin.', 'info');
           return;
         }
 
         throw new Error(json.error || 'İçerik üretilirken bir hata oluştu');
       }
 
-      setResult(json.data);
-      if (json.usage) {
-        setRemainingGenerations(json.usage.remaining);
-        setMaxGenerations(json.usage.max);
+      if (json.data) {
+        const config = PLATFORM_CONFIG[formData.platform] || PLATFORM_CONFIG.Trendyol;
+        const newResult: GeneratedResult = {
+          title: json.data.title,
+          titleCharLimit: config.titleLimit,
+          description: json.data.description,
+          bulletPoints: json.data.highlights || json.data.bulletPoints || [],
+          tags: json.data.tags || [],
+          platform: formData.platform,
+          tone: formData.tone,
+          language: formData.language,
+          generatedAt: 'Az önce',
+        };
+
+        setResult(newResult);
+
+        if (json.usage) {
+          setQuotaCount(json.usage.remaining);
+          setMaxQuota(json.usage.max);
+        } else {
+          setQuotaCount((prev) => Math.max(0, prev - 1));
+        }
+
+        setActiveScreen('results');
+        showToast('Ürün listelemesi ve SEO etiketleri başarıyla üretildi!');
+
+        // Smooth scroll to results
+        setTimeout(() => {
+          const el = document.getElementById('sonuclar');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Bağlantı hatası oluştu, lütfen tekrar deneyin';
-      setErrorBanner({ message: msg });
+      console.error(err);
+      const msg = err instanceof Error ? err.message : 'Bir hata oluştu, lütfen tekrar deneyin.';
+      setActiveScreen('landing');
+      showToast(msg, 'error');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRegenerate = async () => {
-    if (lastInput) {
-      await handleGenerate(lastInput);
+  const handleResetQuota = () => {
+    setQuotaCount(maxQuota);
+    if (activeScreen === 'limit') {
+      setActiveScreen('landing');
+    }
+    showToast(`Kullanım hakkı önizlemesi: ${maxQuota}/${maxQuota} hak.`);
+  };
+
+  const handleCopyText = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    showToast(`${label} panoya kopyalandı!`);
+  };
+
+  const handleScrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-indigo-100 selection:text-indigo-900 flex flex-col justify-between">
-      {/* Navbar */}
-      <Header
-        remainingGenerations={remainingGenerations}
-        maxGenerations={maxGenerations}
-        onOpenWaitlist={() => {
-          setWaitlistReason('pro_clicked');
-          setIsWaitlistOpen(true);
-        }}
+    <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900">
+      {/* 1. Reviewer & Screen Navigation Bar */}
+      <ScreenSwitcher
+        activeScreen={activeScreen}
+        onSelectScreen={(screen) => setActiveScreen(screen)}
+        quotaCount={quotaCount}
+        maxQuota={maxQuota}
+        onResetQuota={handleResetQuota}
+        onOpenHandoff={() => setIsHandoffOpen(true)}
       />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 w-full">
-        {/* Hero Bölümü (Ekran 1) */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/80 mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-            <span>Trendyol, Hepsiburada, N11 ve Etsy İçin E-Ticaret Yapay Zekası</span>
-          </div>
+      {/* 2. Top Navbar */}
+      <Navbar
+        quotaCount={quotaCount}
+        maxQuota={maxQuota}
+        onScrollToSection={handleScrollToSection}
+        onQuickSample={() => handleApplyPreset(PRESET_SAMPLES[1].id)}
+      />
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-            Saniyeler içinde <span className="text-indigo-600">satış getiren</span> ürün başlığı, açıklaması ve etiketleri üret.
-          </h1>
+      {/* Main Content Area */}
+      <main className="flex-1">
+        {/* Hero Section */}
+        <Hero />
 
-          <p className="mt-4 text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Pazar yeri algoritmalarının aradığı anahtar kelimeleri bulun, karakter sınırlarına takılmayın ve alıcıların satın alma kararını hızlandıran profesyonel listeler oluşturun.
-          </p>
-        </div>
+        {/* Tool Form (Primary focus on Screen 1) */}
+        <ToolForm
+          formData={formData}
+          onChange={setFormData}
+          onSubmit={handleGenerate}
+          isLoading={isLoading}
+          onApplyPreset={handleApplyPreset}
+          activePresetId={activePresetId}
+        />
 
-        {/* Genel Hata & Limit Bildirimi */}
-        {errorBanner && (
-          <div className="max-w-4xl mx-auto mb-8 p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-start space-x-3 text-amber-900">
-            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-            <div className="flex-1 text-sm">
-              <p className="font-semibold">{errorBanner.message}</p>
-              {errorBanner.code === 'VISITOR_LIMIT_REACHED' && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setWaitlistReason('limit_reached');
-                    setIsWaitlistOpen(true);
-                  }}
-                  className="mt-1 text-xs text-indigo-700 underline font-bold hover:text-indigo-900 transition-colors cursor-pointer"
-                >
-                  Listora Pro bekleme listesine kaydolun →
-                </button>
-              )}
-            </div>
+        {/* Screen 2: Results View (When activeScreen is 'results') */}
+        {activeScreen === 'results' && (
+          <ResultsView
+            result={result}
+            onRegenerate={() => handleGenerate()}
+            onCopyText={handleCopyText}
+            onOpenHandoff={() => setIsHandoffOpen(true)}
+          />
+        )}
+
+        {/* Loading Skeleton State Preview (When activeScreen is 'skeleton') */}
+        {activeScreen === 'skeleton' && (
+          <div id="sonuclar">
+            <SkeletonLoader />
           </div>
         )}
 
-        {/* Ana Araç Çalışma Alanı: Form ve Çıktı */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Sol Kolon: Form */}
-          <div className={`lg:col-span-${result ? '6' : '12'} max-w-3xl mx-auto w-full transition-all`}>
-            <GeneratorForm
-              onSubmit={handleGenerate}
-              isLoading={isLoading}
-              onOpenWaitlist={() => {
-                setWaitlistReason('pro_clicked');
-                setIsWaitlistOpen(true);
-              }}
+        {/* Screen 3: Limit Reached State (When activeScreen is 'limit') */}
+        {activeScreen === 'limit' && (
+          <div id="sonuclar">
+            <LimitReachedPanel
+              onResetLimit={handleResetQuota}
+              onToast={showToast}
+              dailyLimit={maxQuota}
             />
           </div>
+        )}
 
-          {/* Sağ Kolon: Üretilen Sonuçlar (Ekran 2: Results State) */}
-          {result && (
-            <div className="lg:col-span-6 w-full animate-fade-in">
-              <OutputView
-                data={result}
-                platform={activePlatform}
-                onRegenerate={handleRegenerate}
-                isLoading={isLoading}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Landing Bilgilendirme Bölümleri */}
-        <LandingSections
-          onOpenWaitlist={() => {
-            setWaitlistReason('pro_clicked');
-            setIsWaitlistOpen(true);
-          }}
-        />
+        {/* Landing informative sections */}
+        <HowItWorks />
+        <BeforeAfterSection />
+        <FaqSection />
       </main>
 
-      {/* Pro Bekleme Listesi Modalı (Ekran 3: Limit Reached) */}
-      <WaitlistModal
-        isOpen={isWaitlistOpen}
-        onClose={() => setIsWaitlistOpen(false)}
-        reason={waitlistReason}
-        dailyLimit={maxGenerations}
+      {/* Footer */}
+      <Footer onScrollToSection={handleScrollToSection} />
+
+      {/* Handoff & Code Export Modal */}
+      <HandoffModal
+        isOpen={isHandoffOpen}
+        onClose={() => setIsHandoffOpen(false)}
+        result={result}
+        onToast={showToast}
+      />
+
+      {/* Toast Feedback */}
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast((prev) => ({ ...prev, visible: false }))}
       />
     </div>
   );
