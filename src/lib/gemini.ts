@@ -2,13 +2,14 @@ import { GenerateRequest, GenerateResponse, GenerateResponseSchema } from './val
 import { PLATFORMS, PlatformConfig } from './config';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-3-flash-preview';
+const DEFAULT_MODEL = process.env.GEMINI_MODEL || 'gemini-flash-lite-latest';
 
-// Top working flash models ordered by current Google AI Studio reliability
+// Top reliable models on Google AI Studio
 const CANDIDATE_MODELS = [
   DEFAULT_MODEL,
+  'gemini-flash-lite-latest',
+  'gemini-3.5-flash-lite',
   'gemini-3-flash-preview',
-  'gemini-2.5-flash',
   'gemini-3.8-flash',
 ];
 
