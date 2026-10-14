@@ -7,10 +7,7 @@ import { OutputView } from '@/components/OutputView';
 import { WaitlistModal } from '@/components/WaitlistModal';
 import { LandingSections } from '@/components/LandingSections';
 import { GenerateRequest, GenerateResponse } from '@/lib/validations';
-import {
-  Sparkles,
-  AlertTriangle,
-} from 'lucide-react';
+import { Sparkles, AlertTriangle } from 'lucide-react';
 
 export default function Home() {
   const [result, setResult] = useState<GenerateResponse | null>(null);
@@ -62,7 +59,7 @@ export default function Home() {
       const json = await res.json();
 
       if (!res.ok) {
-        // Handle visitor limit hit
+        // Ziyaretçi günlük limiti doldu (Ekran 3)
         if (json.code === 'VISITOR_LIMIT_REACHED') {
           setRemainingGenerations(0);
           setWaitlistReason('limit_reached');
@@ -74,7 +71,7 @@ export default function Home() {
           return;
         }
 
-        // Handle global daily cap
+        // Genel günlük tavan doldu
         if (json.code === 'GLOBAL_CAP_REACHED') {
           setErrorBanner({
             message: 'Bugünlük kapasite doldu, yarın tekrar dene.',
@@ -106,8 +103,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white selection:bg-indigo-500 selection:text-white flex flex-col justify-between">
-      {/* Top sticky header */}
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-indigo-100 selection:text-indigo-900 flex flex-col justify-between">
+      {/* Navbar */}
       <Header
         remainingGenerations={remainingGenerations}
         maxGenerations={maxGenerations}
@@ -117,27 +114,27 @@ export default function Home() {
         }}
       />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
-        {/* Hero Section Above the Fold */}
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 w-full">
+        {/* Hero Bölümü (Ekran 1) */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/80 mb-4">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
             <span>Trendyol, Hepsiburada, N11 ve Etsy İçin E-Ticaret Yapay Zekası</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-            Saniyeler içinde <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-amber-300 to-amber-500">satış getiren</span> ürün başlığı, açıklaması ve etiketleri üret.
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+            Saniyeler içinde <span className="text-indigo-600">satış getiren</span> ürün başlığı, açıklaması ve etiketleri üret.
           </h1>
 
-          <p className="mt-4 text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-4 text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
             Pazar yeri algoritmalarının aradığı anahtar kelimeleri bulun, karakter sınırlarına takılmayın ve alıcıların satın alma kararını hızlandıran profesyonel listeler oluşturun.
           </p>
         </div>
 
-        {/* Global Error Banner */}
+        {/* Genel Hata & Limit Bildirimi */}
         {errorBanner && (
-          <div className="max-w-4xl mx-auto mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start space-x-3 text-amber-200">
-            <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="max-w-4xl mx-auto mb-8 p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-start space-x-3 text-amber-900">
+            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div className="flex-1 text-sm">
               <p className="font-semibold">{errorBanner.message}</p>
               {errorBanner.code === 'VISITOR_LIMIT_REACHED' && (
@@ -147,7 +144,7 @@ export default function Home() {
                     setWaitlistReason('limit_reached');
                     setIsWaitlistOpen(true);
                   }}
-                  className="mt-1 text-xs text-amber-300 underline font-semibold hover:text-white transition-colors"
+                  className="mt-1 text-xs text-indigo-700 underline font-bold hover:text-indigo-900 transition-colors cursor-pointer"
                 >
                   Listora Pro bekleme listesine kaydolun →
                 </button>
@@ -156,9 +153,9 @@ export default function Home() {
           </div>
         )}
 
-        {/* Core Feature Workspace (Form + Output) */}
+        {/* Ana Araç Çalışma Alanı: Form ve Çıktı */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Column: Generator Form (Takes 6 or 7 cols) */}
+          {/* Sol Kolon: Form */}
           <div className={`lg:col-span-${result ? '6' : '12'} max-w-3xl mx-auto w-full transition-all`}>
             <GeneratorForm
               onSubmit={handleGenerate}
@@ -170,7 +167,7 @@ export default function Home() {
             />
           </div>
 
-          {/* Right Column: Generated Output */}
+          {/* Sağ Kolon: Üretilen Sonuçlar (Ekran 2: Results State) */}
           {result && (
             <div className="lg:col-span-6 w-full animate-fade-in">
               <OutputView
@@ -183,7 +180,7 @@ export default function Home() {
           )}
         </div>
 
-        {/* Informational and SEO Landing Sections */}
+        {/* Landing Bilgilendirme Bölümleri */}
         <LandingSections
           onOpenWaitlist={() => {
             setWaitlistReason('pro_clicked');
@@ -192,7 +189,7 @@ export default function Home() {
         />
       </main>
 
-      {/* Pro Waitlist Modal */}
+      {/* Pro Bekleme Listesi Modalı (Ekran 3: Limit Reached) */}
       <WaitlistModal
         isOpen={isWaitlistOpen}
         onClose={() => setIsWaitlistOpen(false)}

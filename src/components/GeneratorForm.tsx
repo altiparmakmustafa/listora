@@ -104,15 +104,15 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
   };
 
   return (
-    <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 shadow-2xl relative">
-      {/* Quick sample chips */}
-      <div className="mb-6 pb-5 border-b border-slate-800/80">
+    <div className="rounded-2xl bg-white border border-slate-200/90 p-6 sm:p-8 shadow-sm">
+      {/* Hızlı Deneme Şablonları */}
+      <div className="mb-6 pb-5 border-b border-slate-100">
         <div className="flex items-center justify-between mb-2.5">
-          <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
-            <Flame className="w-3.5 h-3.5 text-amber-400" />
+          <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+            <Flame className="w-3.5 h-3.5 text-amber-500" />
             Hızlı Deneme Şablonları:
           </span>
-          <span className="text-[11px] text-slate-500 hidden sm:inline">
+          <span className="text-[11px] text-slate-400 hidden sm:inline">
             Tek tıkla formu doldurun
           </span>
         </div>
@@ -122,7 +122,7 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
               key={idx}
               type="button"
               onClick={() => handleApplyPreset(preset.data)}
-              className="text-xs px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 text-slate-300 hover:text-white transition-all cursor-pointer"
+              className="text-xs px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-medium transition-all cursor-pointer"
             >
               {preset.label}
             </button>
@@ -131,9 +131,9 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* 1. Platform Selector */}
+        {/* 1. Platform Çipleri */}
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
             Hedef Satış Platformu
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -144,25 +144,25 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
                   key={p.id}
                   type="button"
                   onClick={() => setFormData({ ...formData, platform: p.id })}
-                  className={`relative p-3 rounded-2xl border text-left transition-all cursor-pointer ${
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                     isSelected
-                      ? 'border-indigo-500 bg-indigo-500/10 shadow-md shadow-indigo-500/10'
-                      : 'border-slate-800 bg-slate-950/60 hover:border-slate-700 text-slate-400'
+                      ? 'border-indigo-600 bg-indigo-50/70 shadow-xs ring-1 ring-indigo-600'
+                      : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/60'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span
                       className={`text-sm font-bold ${
-                        isSelected ? 'text-white' : 'text-slate-300'
+                        isSelected ? 'text-indigo-950' : 'text-slate-800'
                       }`}
                     >
                       {p.name}
                     </span>
                     {isSelected && (
-                      <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+                      <span className="w-2 h-2 rounded-full bg-indigo-600" />
                     )}
                   </div>
-                  <span className="text-[11px] text-slate-400 block line-clamp-1">
+                  <span className="text-[11px] text-slate-500 block truncate">
                     Maks {p.maxTitleLength} kar.
                   </span>
                 </button>
@@ -171,17 +171,19 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
           </div>
         </div>
 
-        {/* 2. Product Name & Category */}
+        {/* 2. Ürün Adı & Kategori */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label
                 htmlFor="productName"
-                className="text-xs font-semibold uppercase tracking-wider text-slate-300"
+                className="text-xs font-bold uppercase tracking-wider text-slate-700"
               >
                 Ürün Adı
               </label>
-              <span className="text-[11px] text-slate-500">{formData.productName.length}/120</span>
+              <span className="text-[11px] text-slate-400 font-medium">
+                {formData.productName.length}/120
+              </span>
             </div>
             <input
               id="productName"
@@ -190,7 +192,7 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
               onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
               placeholder="Örn: Hakiki Deri Erkek Kartlık & Cüzdan"
               maxLength={120}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all shadow-2xs"
               required
             />
           </div>
@@ -199,11 +201,13 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
             <div className="flex items-center justify-between mb-1.5">
               <label
                 htmlFor="category"
-                className="text-xs font-semibold uppercase tracking-wider text-slate-300"
+                className="text-xs font-bold uppercase tracking-wider text-slate-700"
               >
                 Kategori
               </label>
-              <span className="text-[11px] text-slate-500">{formData.category.length}/80</span>
+              <span className="text-[11px] text-slate-400 font-medium">
+                {formData.category.length}/80
+              </span>
             </div>
             <input
               id="category"
@@ -212,25 +216,27 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               placeholder="Örn: Erkek Cüzdan & Aksesuar"
               maxLength={80}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all shadow-2xs"
               required
             />
           </div>
         </div>
 
-        {/* 3. Key Features */}
+        {/* 3. Öne Çıkan Özellikler */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label
               htmlFor="keyFeatures"
-              className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5"
+              className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5"
             >
-              <span>Temel Özellikler</span>
-              <span className="text-[11px] font-normal lowercase text-slate-500">
+              <span>Öne Çıkan Özellikler</span>
+              <span className="text-[11px] font-normal lowercase text-slate-400">
                 (Her satıra bir özellik)
               </span>
             </label>
-            <span className="text-[11px] text-slate-500">{formData.keyFeatures.length}/1500</span>
+            <span className="text-[11px] text-slate-400 font-medium">
+              {formData.keyFeatures.length}/1500
+            </span>
           </div>
           <textarea
             id="keyFeatures"
@@ -239,22 +245,22 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
             onChange={(e) => setFormData({ ...formData, keyFeatures: e.target.value })}
             placeholder="100% Hakiki dana derisi&#10;RFID korumalı 8 kart bölmesi&#10;Ultra ince cep dostu tasarım&#10;Hediye kutulu"
             maxLength={1500}
-            className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all font-sans leading-relaxed"
+            className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all font-sans leading-relaxed shadow-2xs"
             required
           />
         </div>
 
-        {/* 4. Target Audience (Optional) */}
+        {/* 4. Hedef Kitle (İsteğe Bağlı) */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label
               htmlFor="targetAudience"
-              className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5"
+              className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5"
             >
               <span>Hedef Kitle</span>
-              <span className="text-[11px] font-normal lowercase text-slate-500">(İsteğe bağlı)</span>
+              <span className="text-[11px] font-normal lowercase text-slate-400">(İsteğe bağlı)</span>
             </label>
-            <span className="text-[11px] text-slate-500">
+            <span className="text-[11px] text-slate-400 font-medium">
               {formData.targetAudience?.length || 0}/100
             </span>
           </div>
@@ -263,16 +269,16 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
             type="text"
             value={formData.targetAudience || ''}
             onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value })}
-            placeholder="Örn: Çalışan genç profesyoneller, minimalist hediye arayanlar"
+            placeholder="Örn: Çalışan genç profesyoneller, şık hediye arayanlar"
             maxLength={100}
-            className="w-full px-4 py-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+            className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all shadow-2xs"
           />
         </div>
 
-        {/* 5. Tone & Output Language */}
+        {/* 5. Ton Kontrolü & Çıktı Dili */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
               İçerik Tonu
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -283,10 +289,10 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
                     key={t.id}
                     type="button"
                     onClick={() => setFormData({ ...formData, tone: t.id })}
-                    className={`px-3 py-2 rounded-xl text-xs font-medium border text-left transition-all cursor-pointer ${
+                    className={`px-3 py-2 rounded-xl text-xs font-semibold border text-left transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-indigo-500 bg-indigo-500/10 text-white font-semibold'
-                        : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                        ? 'border-indigo-600 bg-indigo-50 text-indigo-900 ring-1 ring-indigo-600'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                     }`}
                   >
                     {t.label}
@@ -297,7 +303,7 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
               Çıktı Dili
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -308,10 +314,10 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
                     key={lang.id}
                     type="button"
                     onClick={() => setFormData({ ...formData, language: lang.id })}
-                    className={`px-3 py-2 rounded-xl text-xs font-medium border flex items-center justify-center space-x-2 transition-all cursor-pointer ${
+                    className={`px-3 py-2 rounded-xl text-xs font-semibold border flex items-center justify-center space-x-2 transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-indigo-500 bg-indigo-500/10 text-white font-semibold'
-                        : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                        ? 'border-indigo-600 bg-indigo-50 text-indigo-900 ring-1 ring-indigo-600'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                     }`}
                   >
                     <span>{lang.flag}</span>
@@ -323,19 +329,19 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
           </div>
         </div>
 
-        {/* Validation Error Message */}
+        {/* Doğrulama Hatası */}
         {validationError && (
-          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center space-x-2 text-xs text-rose-300">
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+          <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 flex items-center space-x-2 text-xs text-rose-700">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{validationError}</span>
           </div>
         )}
 
-        {/* Submit Button */}
+        {/* "Üret" Butonu (Primary Indigo-600 -> Indigo-700) */}
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-4 px-6 rounded-2xl font-bold text-base bg-gradient-to-r from-indigo-600 via-indigo-500 to-amber-500 hover:from-indigo-500 hover:to-amber-400 text-white shadow-xl shadow-indigo-600/30 flex items-center justify-center space-x-2.5 disabled:opacity-50 transition-all cursor-pointer hover:scale-[1.01]"
+          className="w-full py-4 px-6 rounded-xl font-bold text-base bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 flex items-center justify-center space-x-2.5 disabled:opacity-50 transition-all cursor-pointer hover:scale-[1.005] active:scale-[0.995]"
         >
           {isLoading ? (
             <>
@@ -344,23 +350,26 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
             </>
           ) : (
             <>
-              <Sparkles className="w-5 h-5 text-amber-200" />
+              <Sparkles className="w-5 h-5 text-indigo-200" />
               <span>Satış Getiren İçeriği Üret</span>
             </>
           )}
         </button>
 
-        {/* Honest Beta Note & Pro Waitlist Link */}
-        <div className="pt-2 text-center">
-          <p className="text-xs text-slate-400 leading-relaxed">
+        {/* Araç Altı Notu */}
+        <div className="pt-1 text-center space-y-1">
+          <p className="text-xs text-slate-500 leading-relaxed">
             Ücretsiz beta: günlük kullanım sınırı vardır.{' '}
             <button
               type="button"
               onClick={onOpenWaitlist}
-              className="text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2 transition-colors cursor-pointer"
+              className="text-indigo-600 hover:text-indigo-800 font-semibold underline underline-offset-2 transition-colors cursor-pointer"
             >
               Pro yakında: Bekleme listesine katılın →
             </button>
+          </p>
+          <p className="text-[11px] text-slate-400">
+            Günlük kullanım limitiniz her gece 00:00&apos;da otomatik olarak sıfırlanır.
           </p>
         </div>
       </form>
