@@ -56,7 +56,7 @@ Projeyi çalıştırmak için `.env.example` dosyasını `.env.local` olarak kop
 | Değişken | Açıklama | Varsayılan |
 | :--- | :--- | :--- |
 | `GEMINI_API_KEY` | Google AI Studio API anahtarı (**Zorunlu**) | - |
-| `GEMINI_MODEL` | Kullanılacak Gemini modeli | `gemini-3-flash-preview` |
+| `GEMINI_MODEL` | Kullanılacak Gemini modeli | `gemini-flash-lite-latest` |
 | `DAILY_LIMIT_PER_VISITOR` | Ziyaretçi başına günlük ücretsiz üretim hakkı | `15` |
 | `GLOBAL_DAILY_CAP` | Platform genelindeki günlük maksimum üretim tavanı | `500` |
 | `ADMIN_SECRET` | `/api/admin/stats` koruma parolası | Rastgele üretilen anahtar |

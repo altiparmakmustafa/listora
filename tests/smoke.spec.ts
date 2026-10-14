@@ -140,4 +140,27 @@ test.describe('Listora Micro-SaaS Smoke Tests', () => {
     await expect(page.getByRole('heading', { name: 'Kullanım Koşulları' })).toBeVisible();
     await expect(page.locator('text=Yasal Uyarı (Taslak Metin)')).toBeVisible();
   });
+
+  test('5. Global daily cap displays friendly capacity full message', async ({ page }) => {
+    // Intercept POST /api/generate with 429 GLOBAL_CAP_REACHED
+    await page.route('**/api/generate', async (route) => {
+      await route.fulfill({
+        status: 429,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          error: 'Bugünlük kapasite doldu, yarın tekrar dene.',
+          code: 'GLOBAL_CAP_REACHED',
+        }),
+      });
+    });
+
+    await page.goto('/');
+
+    // Submit form
+    await page.locator('text=Hakiki Deri Cüzdan (Trendyol)').click();
+    await page.locator('button[type="submit"]:has-text("Satış Getiren İçeriği Üret")').click();
+
+    // Verify friendly banner appears
+    await expect(page.locator('text=Bugünlük kapasite doldu, yarın tekrar dene.')).toBeVisible();
+  });
 });
