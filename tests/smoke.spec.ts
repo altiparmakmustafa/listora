@@ -1,6 +1,23 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Listora Micro-SaaS Smoke Tests (Google Stitch UI)', () => {
+  test.beforeEach(async ({ page }) => {
+    // Ensure deterministic visitor quota of 3/3 for tests
+    await page.route('**/api/visitor/status', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          visitor: {
+            remaining: 3,
+            current: 0,
+            max: 3,
+          },
+        }),
+      });
+    });
+  });
+
   test('1. Main landing page renders correctly with Ücretsiz Beta badge', async ({ page }) => {
     await page.goto('/');
 
@@ -43,9 +60,9 @@ test.describe('Listora Micro-SaaS Smoke Tests (Google Stitch UI)', () => {
           tags: ['keten gömlek', 'yazlık gömlek', 'oversize gömlek', 'saf keten', 'trend gömlek'],
         },
         usage: {
-          remaining: 14,
+          remaining: 2,
           current: 1,
-          max: 15,
+          max: 3,
         },
       };
 
@@ -94,7 +111,7 @@ test.describe('Listora Micro-SaaS Smoke Tests (Google Stitch UI)', () => {
         body: JSON.stringify({
           error: 'Bugünlük ücretsiz kullanım sınırınıza ulaştınız.',
           code: 'VISITOR_LIMIT_REACHED',
-          limit: 15,
+          limit: 3,
         }),
       });
     });

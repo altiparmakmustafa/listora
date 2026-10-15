@@ -20,7 +20,7 @@
 - **Satış Açıklaması:** İade oranlarını düşüren, net ve platform kurallarına uygun kısa paragraflar.
 - **Platforma Özel Etiketler:** Etsy için zorunlu **tam 13 etiket ve her biri maksimum 20 karakter** kuralına tam uyum.
 - **Tek Tıkla Kopyalama:** Her blok için ayrı ve toplu kopyalama butonları.
-- **Ücretsiz Beta:** Ziyaretçi başına günlük 15 üretim hakkı ile adil kullanım.
+- **Ücretsiz Beta:** Ziyaretçi başına günlük 3 üretim hakkı ile adil kullanım.
 
 ---
 
@@ -31,7 +31,7 @@
 - **Prompt Enjeksiyon Koruması:** Kullanıcı girdisi kesinlikle veri olarak işlenir; "önceki talimatları unut" gibi prompt injection denemelerine karşı dirençlidir.
 - **Zod Doğrulaması:** Hem gelen istekler hem de yapay zekadan dönen JSON yanıtlar Zod şemaları ile doğrulanır.
 - **Maliyet ve Suistimal Koruması:**
-  - **Ziyaretçi Başına Günlük Limit:** Çerez (`listora_vid`) + IP karması üzerinden günlük 15 üretim.
+  - **Ziyaretçi Başına Günlük Limit:** Çerez (`listora_vid`) + IP karması üzerinden günlük 3 üretim.
   - **Genel Günlük Tavan (`GLOBAL_DAILY_CAP`):** Günlük 500 üretim sınırına ulaşıldığında Gemini API çağrılmadan dostane hata mesajı döner.
   - **Burst Rate Limiting:** IP başına dakikada maksimum 5 istek (bot saldırılarına karşı).
   - **Gövde Boyutu Koruması:** 32KB üzerindeki istekler otomatik reddedilir.
@@ -57,7 +57,7 @@ Projeyi çalıştırmak için `.env.example` dosyasını `.env.local` olarak kop
 | :--- | :--- | :--- |
 | `GEMINI_API_KEY` | Google AI Studio API anahtarı (**Zorunlu**) | - |
 | `GEMINI_MODEL` | Kullanılacak Gemini modeli | `gemini-flash-lite-latest` |
-| `DAILY_LIMIT_PER_VISITOR` | Ziyaretçi başına günlük ücretsiz üretim hakkı | `15` |
+| `DAILY_LIMIT_PER_VISITOR` | Ziyaretçi başına günlük ücretsiz üretim hakkı | `3` |
 | `GLOBAL_DAILY_CAP` | Platform genelindeki günlük maksimum üretim tavanı | `500` |
 | `ADMIN_SECRET` | `/api/admin/stats` koruma parolası | Rastgele üretilen anahtar |
 | `UPSTASH_REDIS_REST_URL` | Upstash Redis REST bağlantı URL'i (İsteğe bağlı) | - |

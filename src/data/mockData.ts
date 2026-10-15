@@ -179,7 +179,7 @@ export const FAQ_ITEMS = [
   },
   {
     q: 'Ücretsiz beta sürümünde günlük kullanım sınırı nedir?',
-    a: 'Beta sürecinde tüm online satıcılara günlük 15 adet tam teşekküllü ürün açıklaması paketi (Başlık, Açıklama, 5 Madde ve 10-13 Etiket) tamamen ücretsiz olarak sunulmaktadır. Günlük haklarınız her gece 00:00 saatinde otomatik olarak yenilenir.'
+    a: 'Beta sürecinde tüm online satıcılara günlük 3 adet tam teşekküllü ürün açıklaması paketi (Başlık, Açıklama, 5 Madde ve 10-13 Etiket) tamamen ücretsiz olarak sunulmaktadır. Günlük haklarınız her gece 00:00 saatinde otomatik olarak yenilenir.'
   },
   {
     q: 'Üretilen metinleri doğrudan mağazamda kullanabilir miyim?',

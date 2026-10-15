@@ -57,7 +57,7 @@ export const UsageService = {
   },
 
   /**
-   * Check per-visitor daily generation limit (e.g. 15 per day)
+   * Check per-visitor daily generation limit (e.g. 3 per day)
    */
   async getVisitorUsage(
     visitorId: string

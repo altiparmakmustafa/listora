@@ -57,7 +57,7 @@ export default function KullanimKosullariPage() {
             <section className="space-y-2">
               <h2 className="text-lg font-bold text-slate-900">2. Ücretsiz Beta ve Adil Kullanım Politikası</h2>
               <p>
-                Listora şu anda genel Beta aşamasındadır. Platform, sunucu ve yapay zeka API kaynaklarını dengeli paylaştırmak için ziyaretçi başına günlük 15 üretim hakkı tanır. Kota her gece 00:00&apos;da yenilenir. Ayrıca tüm platform için genel günlük kapasite tavanı uygulanabilir.
+                Listora şu anda genel Beta aşamasındadır. Platform, sunucu ve yapay zeka API kaynaklarını dengeli paylaştırmak için ziyaretçi başına günlük 3 üretim hakkı tanır. Kota her gece 00:00&apos;da yenilenir. Ayrıca tüm platform için genel günlük kapasite tavanı uygulanabilir.
               </p>
               <p>
                 Kullanıcılar; botlar, otomatik kazıma (scraping) araçları veya tersine mühendislik yöntemleriyle bu limitleri aşmaya çalışmayacağını taahhüt eder.

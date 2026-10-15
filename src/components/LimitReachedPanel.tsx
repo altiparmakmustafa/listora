@@ -12,7 +12,7 @@ interface LimitReachedPanelProps {
 export const LimitReachedPanel: React.FC<LimitReachedPanelProps> = ({
   onResetLimit,
   onToast,
-  dailyLimit = 15,
+  dailyLimit = 3,
 }) => {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);

@@ -21,9 +21,9 @@ export default function Home() {
   // Screen management: 'landing' (form only) | 'results' | 'limit' | 'skeleton'
   const [activeScreen, setActiveScreen] = useState<ActiveScreen>('landing');
 
-  // Daily quota: default 15 free generations per visitor
-  const [maxQuota, setMaxQuota] = useState<number>(15);
-  const [quotaCount, setQuotaCount] = useState<number>(15);
+  // Daily quota: default 3 free generations per visitor
+  const [maxQuota, setMaxQuota] = useState<number>(3);
+  const [quotaCount, setQuotaCount] = useState<number>(3);
 
   // Form State initialized with the popular Linen Shirt example
   const [formData, setFormData] = useState<ProductFormData>(PRESET_SAMPLES[0].data);

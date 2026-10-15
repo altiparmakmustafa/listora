@@ -68,7 +68,7 @@ export default function GizlilikPage() {
                   <strong>Anonim Kullanım Sayaçları (Kişisel Olmayan Veri):</strong> Sistem kapasitesini yönetmek ve hizmet kalitesini artırmak amacıyla günlük toplam üretim adedi, seçilen pazar yeri (Trendyol, Etsy vb.), seçilen içerik tonu ve dil tercihi anonim sayaçlar olarak tutulur. Bu sayaçlar herhangi bir gerçek kişi kimliği ile eşleştirilmez.
                 </li>
                 <li>
-                  <strong>Ziyaretçi Tanımlayıcı Çerezler:</strong> Günlük ücretsiz adil kullanım kotasını (günlük 15 üretim hakkı) takip etmek ve spam botları engellemek amacıyla cihazınızda şifrelenmiş, anonim bir oturum çerezi (<code>listora_vid</code>) ve IP adresi karma (hash) değeri kullanılır.
+                  <strong>Ziyaretçi Tanımlayıcı Çerezler:</strong> Günlük ücretsiz adil kullanım kotasını (günlük 3 üretim hakkı) takip etmek ve spam botları engellemek amacıyla cihazınızda şifrelenmiş, anonim bir oturum çerezi (<code>listora_vid</code>) ve IP adresi karma (hash) değeri kullanılır.
                 </li>
               </ul>
             </section>

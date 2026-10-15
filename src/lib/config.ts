@@ -69,7 +69,7 @@ export const LANGUAGES = [
  */
 export const USAGE_CONFIG = {
   // Read from environment with conservative fallbacks
-  dailyLimitPerVisitor: parseInt(process.env.DAILY_LIMIT_PER_VISITOR || '15', 10),
+  dailyLimitPerVisitor: parseInt(process.env.DAILY_LIMIT_PER_VISITOR || '3', 10),
   globalDailyCap: parseInt(process.env.GLOBAL_DAILY_CAP || '500', 10),
   burstLimitPerMinute: 5, // Max 5 requests per minute per IP to prevent spam bots
   maxPayloadSizeBytes: 32 * 1024, // 32 KB payload limit
