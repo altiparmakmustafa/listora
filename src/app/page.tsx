@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ScreenSwitcher } from '@/components/ScreenSwitcher';
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { ToolForm } from '@/components/ToolForm';
@@ -191,14 +190,6 @@ export default function Home() {
     }
   };
 
-  const handleResetQuota = () => {
-    setQuotaCount(maxQuota);
-    if (activeScreen === 'limit') {
-      setActiveScreen('landing');
-    }
-    showToast(`Kullanım hakkı önizlemesi: ${maxQuota}/${maxQuota} hak.`);
-  };
-
   const handleCopyText = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     showToast(`${label} panoya kopyalandı!`);
@@ -213,17 +204,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900">
-      {/* 1. Reviewer & Screen Navigation Bar */}
-      <ScreenSwitcher
-        activeScreen={activeScreen}
-        onSelectScreen={(screen) => setActiveScreen(screen)}
-        quotaCount={quotaCount}
-        maxQuota={maxQuota}
-        onResetQuota={handleResetQuota}
-        onOpenHandoff={() => setIsHandoffOpen(true)}
-      />
-
-      {/* 2. Top Navbar */}
+      {/* Top Navbar */}
       <Navbar
         quotaCount={quotaCount}
         maxQuota={maxQuota}
@@ -267,7 +248,6 @@ export default function Home() {
         {activeScreen === 'limit' && (
           <div id="sonuclar">
             <LimitReachedPanel
-              onResetLimit={handleResetQuota}
               onToast={showToast}
               dailyLimit={maxQuota}
             />
