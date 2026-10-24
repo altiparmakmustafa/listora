@@ -68,7 +68,14 @@ export const ToolForm: React.FC<ToolFormProps> = ({
 
       {/* Main Tool Card */}
       <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 sm:p-8 transition-shadow hover:shadow-md">
-        <form onSubmit={onSubmit} className="space-y-6">
+        <form
+          action="javascript:void(0);"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit(e);
+          }}
+          className="space-y-6"
+        >
           {/* Row 1: Ürün Adı & Kategori */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* Ürün Adı */}

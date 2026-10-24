@@ -23,6 +23,13 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Listora' }],
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://listora.vercel.app'),
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     title: 'Listora - E-Ticaret Pazar Yeri Yapay Zeka İçerik Motoru',
     description:

@@ -74,6 +74,7 @@ test.describe('Listora Micro-SaaS Smoke Tests (Google Stitch UI)', () => {
     });
 
     await page.goto('/');
+    await expect(page.locator('text=Günlük Kalan:')).toBeVisible();
 
     // Click preset sample
     const sampleButton = page.locator('button:has-text("Keten Gömlek")').first();
@@ -130,6 +131,10 @@ test.describe('Listora Micro-SaaS Smoke Tests (Google Stitch UI)', () => {
     });
 
     await page.goto('/');
+    await expect(page.locator('text=Günlük Kalan:')).toBeVisible();
+
+    // Click preset sample so required fields are populated
+    await page.locator('button:has-text("Keten Gömlek")').first().click();
 
     // Submit form
     await page.locator('button[type="submit"]:has-text("Üret")').click();
@@ -175,6 +180,10 @@ test.describe('Listora Micro-SaaS Smoke Tests (Google Stitch UI)', () => {
     });
 
     await page.goto('/');
+    await expect(page.locator('text=Günlük Kalan:')).toBeVisible();
+
+    // Click preset sample so required fields are populated
+    await page.locator('button:has-text("Keten Gömlek")').first().click();
 
     // Submit form
     await page.locator('button[type="submit"]:has-text("Üret")').click();
